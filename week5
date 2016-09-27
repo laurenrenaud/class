@@ -1,25 +1,32 @@
 def main():
     # Open the sales.txt file for reading.
     file = open('downloadCitations.txt', 'r')
-
-    # Read the first line from the file, but
-    # don't convert to a number yet. We still
-    # need to test for an empty string.
-    line = file.readline()
     
+    # open deletion file
+    deletion = open('noise_words.txt', 'r')
+    
+    #open the text file with list of misspellings
+    replacement_list = open('common_misspellings.csv', 'r')
+
+    # Read the first line from the file
+    line = file.readline()
 
     # As long as an empty string is not returned
     # from readline, continue processing.
     while line != '':
-        # Convert line to a float.
-        amount = line
 
-        # Format and display the amount.
-        print(amount)
+        # Display line.
+        # print(line)
+        
+        # Search and replace on the line
+        # code goes here
+        
+        # Deletion code
+        # goes here
 
         # Read the next line.
         line = file.readline()
-        
+    
     # Close the file.
     file.close()
 
