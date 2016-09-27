@@ -1,34 +1,30 @@
+import csv
+
+# open misspellings document
+with open('common_misspellings.csv', encoding = 'ISO-8859-1') as csvfile:
+readCSV = csv.reader(csvfile, delimiter=',')
+
 def main():
-    # Open the sales.txt file for reading.
-    file = open('downloadCitations.txt', 'r')
+    abstracts = open('downloadCitations.txt', 'r')
+    count=1
     
-    # open deletion file
-    deletion = open('noise_words.txt', 'r')
+    # create lists for misspellings and corrections
+    wrong = []
+    fixed = []
     
-    #open the text file with list of misspellings
-    replacement_list = open('common_misspellings.csv', 'r')
-
-    # Read the first line from the file
-    line = file.readline()
-
-    # As long as an empty string is not returned
-    # from readline, continue processing.
-    while line != '':
-
-        # Display line.
-        # print(line)
+    # parse csv of misspellings into lists
+    for row in readCSV:
+        col1 = row[0]
+        col2 = row[1]
+        wrong.append(col1)
+        fixed.append(col2)
+    
+    # make replacements
+    for line in abstracts:
+        for i in wrong:
+            text_line = line.replace(wrong[i], fixed[i])
+            print(text_line)
         
-        # Search and replace on the line
-        # code goes here
-        
-        # Deletion code
-        # goes here
+    abstracts.close()
 
-        # Read the next line.
-        line = file.readline()
-    
-    # Close the file.
-    file.close()
-
-# Call the main function.
 main()
