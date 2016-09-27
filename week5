@@ -2,7 +2,7 @@ import csv
 
 # open misspellings document
 with open('common_misspellings.csv', encoding = 'ISO-8859-1') as csvfile:
-readCSV = csv.reader(csvfile, delimiter=',')
+    readCSV = csv.reader(csvfile, delimiter=',')
 
 def main():
     abstracts = open('downloadCitations.txt', 'r')
@@ -19,12 +19,23 @@ def main():
         wrong.append(col1)
         fixed.append(col2)
     
+    # open deletion file & read first line
+    deletion = open('noise_words.txt', 'r')
+    
+    delete_list = []
+    
+    while line != '':
+        row = deletion.readline()
+        delete_list.append(row)
+    
     # make replacements
     for line in abstracts:
         for i in wrong:
             text_line = line.replace(wrong[i], fixed[i])
-            print(text_line)
-        
+            for i in delete_list:
+                text_line = line.remove(delete_list)
+            
+    print(text_line)    
     abstracts.close()
 
 main()
