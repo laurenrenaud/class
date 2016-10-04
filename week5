@@ -1,6 +1,3 @@
-### YONI'S CODE
-
-
 import csv
 
 # open misspellings document
@@ -9,48 +6,75 @@ misspellings = csv.reader(csvfile, delimiter=',')
 
 
 def main():
-    print("point0")
 
     abstracts = open('downloadCitations.txt', 'r')
     count = 1
 
-    print("pointA")
-
-    # create lists for misspellings and corrections
-    wrong = []
-    fixed = []
-
-    # parse csv of misspellings into lists
+    # create dictionary for misspellings
+    corrections = {}
     for row in misspellings:
         col1 = row[0]
         col2 = row[1]
-        wrong.append(col1)
-        fixed.append(col2)
-
-    print("pointB")
+        corrections[col1] = col2
 
     # open deletion file & read first line
     deletion = open('noise_words.txt', 'r')
 
-    # read the first line of the replacement file
+    # read in replacement file
     line = deletion.readline()
-
     delete_list = []
-
     while line != '':
-        row = deletion.readline()
-        delete_list.append(row)
+        line = deletion.readline()
+        line = line.rstrip('\n')
+        delete_list.append(line)
 
-    print("pointC")
+    # create holder for keywords
+    keywords=[]
+    
+    # do corrections then replacements
+    for i in abstracts:
+        abs_words = i.split()
+        for word in abs_words:
+            for key in corrections:
+                word = word.replace(key, corrections[key])
+            if word not in delete_list:
+                 keywords.append(word)
+        # print(keywords)
+    
+    # build HTML list
+    output.append=[]
+    for word in keywords:
+        output.append('''<li><a href="''', word, '''</a>''')
+    html_list = ouput.append
+    
+    # build HTML document
+    html_begin = """
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <h1>Welcome to the ACM Library</h1>
+    <h3>A research, discovery and networking platform</h3>
+    <h2>Browse our library by <a href="#author">author</a> or <a href="#keyword">keyword</a>.
+    <h3 id="keyword"><h3>Keywords</h3></a>
+    <ul>
+    """
+    
+    html_end = """
+    </ul>
+    </body>
+    </html>"""
+    
+    # concatenate HTML
+    html_str = html_begin + html_list + html_end
+    
+    # write out HTML
+    Html_file= open("index.html","w")
+    Html_file.write(html_str)
+    Html_file.close()
 
-    # make replacements
-    for line in abstracts:
-        for i in wrong:
-            text_line = line.replace(wrong[i], fixed[i])
-            for i in delete_list:
-                text_line = line.remove(delete_list)
-    print(text_line)
     abstracts.close()
 
-
 main()
+
+
+
