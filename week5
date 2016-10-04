@@ -1,41 +1,56 @@
+### YONI'S CODE
+
+
 import csv
 
 # open misspellings document
-with open('common_misspellings.csv', encoding = 'ISO-8859-1') as csvfile:
-    readCSV = csv.reader(csvfile, delimiter=',')
+csvfile = open('common_misspellings.csv', encoding='ISO-8859-1')
+misspellings = csv.reader(csvfile, delimiter=',')
+
 
 def main():
+    print("point0")
+
     abstracts = open('downloadCitations.txt', 'r')
-    count=1
-    
+    count = 1
+
+    print("pointA")
+
     # create lists for misspellings and corrections
     wrong = []
     fixed = []
-    
+
     # parse csv of misspellings into lists
-    for row in readCSV:
+    for row in misspellings:
         col1 = row[0]
         col2 = row[1]
         wrong.append(col1)
         fixed.append(col2)
-    
+
+    print("pointB")
+
     # open deletion file & read first line
     deletion = open('noise_words.txt', 'r')
-    
+
+    # read the first line of the replacement file
+    line = deletion.readline()
+
     delete_list = []
-    
+
     while line != '':
         row = deletion.readline()
         delete_list.append(row)
-    
+
+    print("pointC")
+
     # make replacements
     for line in abstracts:
         for i in wrong:
             text_line = line.replace(wrong[i], fixed[i])
             for i in delete_list:
                 text_line = line.remove(delete_list)
-            
-    print(text_line)    
+    print(text_line)
     abstracts.close()
+
 
 main()
