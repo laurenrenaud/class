@@ -6,7 +6,7 @@
 import csv
 
 # open misspellings document
-csvfile = open('Team6_Milestone3C_Sub_ Renaud_ Steinberg.csv', encoding='ISO-8859-1')
+csvfile = open('Team6_Milestone3C_Sub_Renaud_Steinberg.csv', encoding='ISO-8859-1')
 misspellings = csv.reader(csvfile, delimiter=',')
 
 
@@ -20,7 +20,7 @@ def main():
         corrections[wrong] = right
 
     # open deletion file & read first line
-    deletion = open('Team6_Milestone3C_Del_ Renaud_ Steinberg.txt', 'r')
+    deletion = open('Team6_Milestone3C_Del_Renaud_Steinberg.txt', 'r')
 
     # read in replacement file
     line = deletion.readline()
@@ -30,15 +30,17 @@ def main():
         line = line.rstrip('\n')
         delete_list.append(line)
         
+    #print(delete_list)
+        
         
     ### SHOULD MAYBE BE JUST AT END?
         # read in replacement file
-    delete_list = []
-    while line != '':
-        line = deletion.readline()
-        line = line.rstrip('\n')
-        delete_list.append(line)
-        line = deletion.readline()
+    #delete_list = []
+    #while line != '':
+    #    line = deletion.readline()
+    #    line = line.rstrip('\n')
+    #    delete_list.append(line)
+    #    line = deletion.readline()
     
     
     # create holder for keywords
@@ -84,11 +86,17 @@ def main():
     print(top_keywords)
 
     # build HTML list
+    #html_list = []
+    #for word in top_keywords:
+    #    ### MAYBE TRY CONCATONATE INSTEAD OF LIST
+    #    li = '<li><a href="', word, '.html>', word, '</a>'
+    #    html_list.append(li)
+        
     html_list = []
     for word in top_keywords:
-        ### MAYBE TRY CONCATONATE INSTEAD OF LIST
-        li = '<li><a href="', word, '.html>', word, '</a>'
+        li = '<li><a href="' + word + '.html">' + word + '</a>'
         html_list.append(li)
+
 
     li_list = '\n'.join(map(str, html_list))
     
@@ -177,7 +185,7 @@ def main():
     <body>
     <h1>Welcome to the ACM Library</h1>
     <h3>A research, discovery and networking platform</h3>
-    <h2>Browse our library by <a href="#author">author</a> or <a href="#keyword">keyword</a>.
+    <h2>Browse our library by <a href="#keyword">keyword</a>.
     <h3 id="keyword"><h3>Keywords</h3></a>
     <ul>
     """
