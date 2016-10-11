@@ -1,52 +1,143 @@
+## Team 6
+## Lauren Renaud
+## Yoni Steinberg
+
 import csv
 
 # open misspellings document
-csvfile = open('common_misspellings.csv', encoding='ISO-8859-1')
+csvfile = open('Team6_Milestone3C_Sub_Renaud_Steinberg.csv', encoding='ISO-8859-1')
 misspellings = csv.reader(csvfile, delimiter=',')
 
-
 def main():
-
-    abstracts = open('downloadCitations.txt', 'r')
-    count = 1
 
     # create dictionary for misspellings
     corrections = {}
     for row in misspellings:
-        col1 = row[0]
-        col2 = row[1]
-        corrections[col1] = col2
+        wrong = row[0]
+        right = row[1]
+        corrections[wrong] = right
 
     # open deletion file & read first line
-    deletion = open('noise_words.txt', 'r')
+    deletion = open('Team6_Milestone3C_Del_Renaud_Steinberg.txt', 'r')
 
     # read in replacement file
-    line = deletion.readline()
     delete_list = []
+    line = deletion.readline()
     while line != '':
-        line = deletion.readline()
         line = line.rstrip('\n')
         delete_list.append(line)
-
-    # create holder for keywords
-    keywords=[]
+        line = deletion.readline()
     
-    # do corrections then replacements
-    for i in abstracts:
-        abs_words = i.split()
+    # create holder for keywords
+    keywords = []
+
+    abstracts_keywords = open('downloadCitations.txt', 'r')
+
+    # do corrections then deletions
+    for i in abstracts_keywords:
+        abs_words = i.replace(';', ' ').replace(',', ' ').replace(':', ' ').replace('-', ' ').replace('.', ' ') \
+            .replace('(', ' ').replace(')', ' ').replace('{', ' ').replace('}', ' ').replace('0', ' ').replace('1', ' ') \
+            .replace('2', ' ').replace('3', ' ').replace('4', ' ').replace('5', ' ').replace('6', ' ').replace('7', ' ') \
+            .replace('8', ' ').replace('9', ' ').replace("'", ' ').replace('"', ' ').replace(']', ' ').replace('[', ' ') \
+            .replace('“', ' ').replace('”', ' ').replace('?', ' ').replace('=', ' ').replace('&', ' ').split()
         for word in abs_words:
+            word = word.lower()
             for key in corrections:
                 word = word.replace(key, corrections[key])
             if word not in delete_list:
-                 keywords.append(word)
-        # print(keywords)
-    
-    # build HTML list
-    output.append=[]
+                keywords.append(word)
+
+
+    # from http://stackoverflow.com/questions/4088265/sorted-word-frequency-count-using-python
+    from string import punctuation
+    from operator import itemgetter
+    words = {}
+    N = 35  # number of keywords to display
     for word in keywords:
-        output.append('''<li><a href="''', word, '''</a>''')
-    html_list = ouput.append
+        words[word] = words.get(word, 0) + 1
+    tops = sorted(words.items(), key=itemgetter(1), reverse=True)[:N]
+
+    top_keywords = []
+    for row in tops:
+        keys1 = row[0]
+        top_keywords.append(keys1)
+
+    #print(top_keywords)
+
+    # build HTML list       
+    html_list = []
+    for word in top_keywords:
+        li = '<li><a href="' + word + '.html">' + word + '</a>'
+        html_list.append(li)
+    li_list = '\n'.join(map(str, html_list))
     
+    # testing
+    #print('\n')
+    #print('\n')
+    #print(li_list)
+
+    abstracts = open('downloadCitations.txt', 'r')
+    # read abstracts into individual line items
+    abstract_list = []
+    # read in the first line
+    aline = abstracts.readline()
+
+    # until reach the end of file
+    while aline != '':
+        # create a (new) blank list for the articles
+        article = []
+        while aline != '\n':
+            aline = aline.rstrip('\n')
+            # append to list called article
+            article.append(aline)
+            # read the next line
+            aline = abstracts.readline()
+        # convert to string for the whole abstract
+        new_entry = ' '.join(article)
+        # append the individual entries to the overall list
+        abstract_list.append(new_entry)
+        # read in the next line
+        aline = abstracts.readline()
+
+    # testing
+    #print('\n')
+    #print(abstract_list[1])
+    #print('\n')
+    #print(abstract_list[8])
+    #print('\n')
+
+
+    #### Building pages for each keyword
+    # take each keyword
+    for word in top_keywords:
+        indices = []
+        count = 0
+        # compare each keyword to the abstracts
+        for listing in abstract_list:
+            # if keyword is in the abstract, append to a list
+            # of articles for that keyword
+            if (word in str(listing)):
+                # add links for each article
+                listing_link = '<li><a href="article' + str(count) + '.html">Read More</a>'
+                #print(listing_link)
+                # connect link to abstract
+                abs_listing = listing + listing_link
+                indices.append(abs_listing)
+                #print(abs_listing)
+            count += 1
+        # build page, including line breaks between abstracts
+        page = '\n \n <br><br> \n'.join(indices)
+        ### Prints out the files
+        ### Commenting out now to prevent this part
+        ### from generating excess files 
+        ### while testing
+        filename = word + '.html'
+        keyword_file = open(filename, "w")
+        keyword_file.write(page)
+        keyword_file.close()
+        
+    #print(page)
+
     # build HTML document
     html_begin = """
     <!DOCTYPE html>
@@ -54,27 +145,26 @@ def main():
     <body>
     <h1>Welcome to the ACM Library</h1>
     <h3>A research, discovery and networking platform</h3>
-    <h2>Browse our library by <a href="#author">author</a> or <a href="#keyword">keyword</a>.
+    <h2>Browse our library by <a href="#keyword">keyword</a>.
     <h3 id="keyword"><h3>Keywords</h3></a>
     <ul>
     """
-    
+
     html_end = """
     </ul>
     </body>
     </html>"""
-    
-    # concatenate HTML
-    html_str = html_begin + html_list + html_end
-    
+
+    # build HTML doc
+    html_str = html_begin + li_list + html_end
+
     # write out HTML
-    Html_file= open("index.html","w")
-    Html_file.write(html_str)
-    Html_file.close()
+    html_file = open("index.html", "w")
+    html_file.write(html_str)
+    html_file.close()
 
     abstracts.close()
 
+
 main()
-
-
 
