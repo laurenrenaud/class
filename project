@@ -2,13 +2,11 @@
 ## Lauren Renaud
 ## Yoni Steinberg
 
-
 import csv
 
 # open misspellings document
 csvfile = open('Team6_Milestone3C_Sub_Renaud_Steinberg.csv', encoding='ISO-8859-1')
 misspellings = csv.reader(csvfile, delimiter=',')
-
 
 def main():
 
@@ -21,7 +19,6 @@ def main():
 
     # open deletion file & read first line
     deletion = open('Team6_Milestone3C_Del_Renaud_Steinberg.txt', 'r')
-
 
     # read in replacement file
     delete_list = []
@@ -65,27 +62,19 @@ def main():
         keys1 = row[0]
         top_keywords.append(keys1)
 
-    print(top_keywords)
+    #print(top_keywords)
 
     # build HTML list       
     html_list = []
     for word in top_keywords:
         li = '<li><a href="' + word + '.html">' + word + '</a>'
         html_list.append(li)
-
-
     li_list = '\n'.join(map(str, html_list))
     
     # testing
-    print('\n')
-    print('\n')
-    print(li_list)
-
-    ### NOTE TO GRADER
-    ## Not sure here how to get the 'li' to just have the string and not ( ' and , included
-    ## but could remove that as well if easier]
-    ## Might be using wrong data type?
-
+    #print('\n')
+    #print('\n')
+    #print(li_list)
 
     abstracts = open('downloadCitations.txt', 'r')
     # read abstracts into individual line items
@@ -103,74 +92,76 @@ def main():
             article.append(aline)
             # read the next line
             aline = abstracts.readline()
-            ### NOTE TO GRADER
-            ### this outputs each line in a single quote with a comma at the end
-            ### and then puts those all together
-            ### not sure how to do it a different way so the format is right
-            ### Need to figure out how to concatenate instead of append
-        #append the individual entries to the overall list
-        abstract_list.append(article)
+        # convert to string for the whole abstract
+        new_entry = ' '.join(article)
+        # append the individual entries to the overall list
+        abstract_list.append(new_entry)
         # read in the next line
         aline = abstracts.readline()
 
     # testing
-    print('\n')
-    print(abstract_list[1])
-    print('\n')
-    print(abstract_list[8])
-    print('\n')
+    #print('\n')
+    #print(abstract_list[1])
+    #print('\n')
+    #print(abstract_list[8])
+    #print('\n')
 
 
-
-
-    ##### TRYING TO BUILD LIST OF INDICES THAT CONTAIN KEYWORD
-    #### FOR EACH KEYWORD
-
-
-    # from http://stackoverflow.com/questions/14849293/python-find-index-postion-in-list-based-of-partial-string
-    #indices = [i for i, s in enumerate(abstract_list) if 'top_keywords' in s]
-
-    
-    
+    #### Building pages for each keyword
     # take each keyword
     for word in top_keywords:
         indices = []
+        count = 0
+        
         # compare each keyword to the abstracts
         for listing in abstract_list:
+        
             # if keyword is in the abstract, append to a list
             # of articles for that keyword
             if (word in str(listing)):
-                ### Need to figure out how to print out 
-                ### in readable format
-                ### right now printing as series of list items
-                ### with ,' between each item
-                ### instead of line breaks
-                indices.append(listing)
-                #indices = '\n'.join(map(str, indices))
-                indicies = "".join(indices)
-                #indices.append('\n')
-                #indices.append('\n')
-                #indicies.append(print_out)
-                #print(indices, "test")
-        # build page for that keyword
-        # not sure how to use the variable of the keyword
-        # to name the file
-        page = str(indices)
-        print(page)
-        print("test")
+                # add links for each article
+                listing_link = '<li><a href="article' + str(count) + '.html">Abstract</a>'
+                
+                ### Can include this HTML block
+                ### if want to embellish article pages
+                ### but not needed
+                # build HTML document
+#                 html_begin = """
+#                 <!DOCTYPE html><html>
+#                 <body>
+#                 """                
+#                 html_end = """
+#                 </body>
+#                 </html>"""
+#                 
+#                 build HTML doc
+#                 abs_page = html_begin + listing + html_end
+                
+                # write out HTML
+                filename = 'article' + str(count) + '.html'
+                keyword_file = open(filename, "w")
+                keyword_file = write(listing)
+                #keyword_file.write(abs_page)
+                keyword_file.close()
+                
+                #print(listing_link)
+                # connect link to abstract
+                abs_listing = listing + listing_link
+                indices.append(abs_listing)
+                #print(abs_listing)
+            
+            count += 1
+        
+        # build page, including line breaks between abstracts
+        page = '\n \n <br><br> \n'.join(indices)
+        
+        ### Print out the files
         filename = word + '.html'
-        ### Prints out the files
-        ### Commenting out now to prevent this part
-        ### from generating excess files 
-        ### while testing
         keyword_file = open(filename, "w")
         keyword_file.write(page)
         keyword_file.close()
-            
-    # testing
-    #print(filename)
-    #print(indices)
-    print('\n')
+        
+    #print(page)
 
     # build HTML document
     html_begin = """
@@ -179,7 +170,7 @@ def main():
     <body>
     <h1>Welcome to the ACM Library</h1>
     <h3>A research, discovery and networking platform</h3>
-    <h2>Browse our library by <a href="#keyword">keyword</a>.
+    <h2>Browse our library by keyword.
     <h3 id="keyword"><h3>Keywords</h3></a>
     <ul>
     """
