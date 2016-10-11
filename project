@@ -1,0 +1,204 @@
+## Team 6
+## Lauren Renaud
+## Yoni Steinberg
+
+
+import csv
+
+# open misspellings document
+csvfile = open('Team6_Milestone3C_Sub_ Renaud_ Steinberg.csv', encoding='ISO-8859-1')
+misspellings = csv.reader(csvfile, delimiter=',')
+
+
+def main():
+
+    # create dictionary for misspellings
+    corrections = {}
+    for row in misspellings:
+        wrong = row[0]
+        right = row[1]
+        corrections[wrong] = right
+
+    # open deletion file & read first line
+    deletion = open('Team6_Milestone3C_Del_ Renaud_ Steinberg.txt', 'r')
+
+    # read in replacement file
+    line = deletion.readline()
+    delete_list = []
+    while line != '':
+        line = deletion.readline()
+        line = line.rstrip('\n')
+        delete_list.append(line)
+        
+        
+    ### SHOULD MAYBE BE JUST AT END?
+        # read in replacement file
+    delete_list = []
+    while line != '':
+        line = deletion.readline()
+        line = line.rstrip('\n')
+        delete_list.append(line)
+        line = deletion.readline()
+    
+    
+    # create holder for keywords
+    keywords = []
+
+    abstracts_keywords = open('downloadCitations.txt', 'r')
+
+    # do corrections then deletions
+    for i in abstracts_keywords:
+        abs_words = i.replace(';', ' ').replace(',', ' ').replace(':', ' ').replace('-', ' ').replace('.', ' ') \
+            .replace('(', ' ').replace(')', ' ').replace('{', ' ').replace('}', ' ').replace('0', ' ').replace('1', ' ') \
+            .replace('2', ' ').replace('3', ' ').replace('4', ' ').replace('5', ' ').replace('6', ' ').replace('7', ' ') \
+            .replace('8', ' ').replace('9', ' ').replace("'", ' ').replace('"', ' ').replace(']', ' ').replace('[', ' ') \
+            .replace('“', ' ').replace('”', ' ').replace('?', ' ').replace('=', ' ').replace('&', ' ').split()
+        for word in abs_words:
+            word = word.lower()
+            for key in corrections:
+                word = word.replace(key, corrections[key])
+            if word not in delete_list:
+                keywords.append(word)
+
+    ###### NOTE TO GRADER
+    ## the word 'whichh' shows up as a top keyword
+    ## and 'internationalal'
+    ## They're both in the corrections file as should be correcting to 'which' and 'international'
+    ## and then 'which' is in the deletion file
+    ## and I can't figure out why it isn't getting deleted
+
+    # from http://stackoverflow.com/questions/4088265/sorted-word-frequency-count-using-python
+    from string import punctuation
+    from operator import itemgetter
+    words = {}
+    N = 35  # number of keywords to display
+    for word in keywords:
+        words[word] = words.get(word, 0) + 1
+    tops = sorted(words.items(), key=itemgetter(1), reverse=True)[:N]
+
+    top_keywords = []
+    for row in tops:
+        keys1 = row[0]
+        top_keywords.append(keys1)
+
+    print(top_keywords)
+
+    # build HTML list
+    html_list = []
+    for word in top_keywords:
+        ### MAYBE TRY CONCATONATE INSTEAD OF LIST
+        li = '<li><a href="', word, '.html>', word, '</a>'
+        html_list.append(li)
+
+    li_list = '\n'.join(map(str, html_list))
+    
+    # testing
+    print('\n')
+    print('\n')
+    print(li_list)
+
+    ### NOTE TO GRADER
+    ## Not sure here how to get the 'li' to just have the string and not ( ' and , included
+    ## but could remove that as well if easier]
+    ## Might be using wrong data type?
+
+
+    abstracts = open('downloadCitations.txt', 'r')
+    # read abstracts into individual line items
+    abstract_list = []
+    # read in the first line
+    aline = abstracts.readline()
+
+    # until reach the end of file
+    while aline != '':
+        # create a (new) blank list for the articles
+        article = []
+        while aline != '\n':
+            aline = aline.rstrip('\n')
+            # append to list called article
+            article.append(aline)
+            # read the next line
+            aline = abstracts.readline()
+            ### NOTE TO GRADER
+            ### this outputs each line in a single quote with a comma at the end
+            ### and then puts those all together
+            ### not sure how to do it a different way so the format is right
+        #append the individual entries to the overall list
+        abstract_list.append(article)
+        # read in the next line
+        aline = abstracts.readline()
+
+    # testing
+    print('\n')
+    print(abstract_list[1])
+    print('\n')
+    print(abstract_list[8])
+    print('\n')
+
+
+
+
+    ##### TRYING TO BUILD LIST OF INDICES THAT CONTAIN KEYWORD
+    #### FOR EACH KEYWORD
+
+
+    # from http://stackoverflow.com/questions/14849293/python-find-index-postion-in-list-based-of-partial-string
+    #indices = [i for i, s in enumerate(abstract_list) if 'top_keywords' in s]
+
+    
+    
+    # take each keyword
+    for word in top_keywords:
+        indices = []
+        # compare each keyword to the abstracts
+        for listing in abstract_list:
+            # if keyword is in the abstract, append to a list
+            # of articles for that keyword
+            if (word in listing):
+                list_of_abstracts = listing + '\n' + '\n'
+                indices.append(list_of_abstracts)
+        # build page for that keyword
+        # not sure how to use the variable of the keyword
+        # to name the file
+        #page = str(indices)
+        #filename = word + '.html'
+        #keyword_file = open(filename, "w")
+        #keyword_file.write(indices)
+        #keyword_file.close()
+            
+    # testing
+    print(indices)
+    print('\n')
+
+    # build HTML document
+    html_begin = """
+    <!DOCTYPE html>
+    <html>
+    <body>
+    <h1>Welcome to the ACM Library</h1>
+    <h3>A research, discovery and networking platform</h3>
+    <h2>Browse our library by <a href="#author">author</a> or <a href="#keyword">keyword</a>.
+    <h3 id="keyword"><h3>Keywords</h3></a>
+    <ul>
+    """
+
+    html_end = """
+    </ul>
+    </body>
+    </html>"""
+
+    # build HTML doc
+    html_str = html_begin + li_list + html_end
+
+    # write out HTML
+    html_file = open("index.html", "w")
+    html_file.write(html_str)
+    html_file.close()
+
+    abstracts.close()
+
+
+main()
+
+
+
