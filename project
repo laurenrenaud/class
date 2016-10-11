@@ -22,26 +22,14 @@ def main():
     # open deletion file & read first line
     deletion = open('Team6_Milestone3C_Del_Renaud_Steinberg.txt', 'r')
 
+
     # read in replacement file
-    line = deletion.readline()
     delete_list = []
+    line = deletion.readline()
     while line != '':
-        line = deletion.readline()
         line = line.rstrip('\n')
         delete_list.append(line)
-        
-    #print(delete_list)
-        
-        
-    ### SHOULD MAYBE BE JUST AT END?
-        # read in replacement file
-    #delete_list = []
-    #while line != '':
-    #    line = deletion.readline()
-    #    line = line.rstrip('\n')
-    #    delete_list.append(line)
-    #    line = deletion.readline()
-    
+        line = deletion.readline()
     
     # create holder for keywords
     keywords = []
@@ -62,12 +50,6 @@ def main():
             if word not in delete_list:
                 keywords.append(word)
 
-    ###### NOTE TO GRADER
-    ## the word 'whichh' shows up as a top keyword
-    ## and 'internationalal'
-    ## They're both in the corrections file as should be correcting to 'which' and 'international'
-    ## and then 'which' is in the deletion file
-    ## and I can't figure out why it isn't getting deleted
 
     # from http://stackoverflow.com/questions/4088265/sorted-word-frequency-count-using-python
     from string import punctuation
@@ -85,13 +67,7 @@ def main():
 
     print(top_keywords)
 
-    # build HTML list
-    #html_list = []
-    #for word in top_keywords:
-    #    ### MAYBE TRY CONCATONATE INSTEAD OF LIST
-    #    li = '<li><a href="', word, '.html>', word, '</a>'
-    #    html_list.append(li)
-        
+    # build HTML list       
     html_list = []
     for word in top_keywords:
         li = '<li><a href="' + word + '.html">' + word + '</a>'
@@ -169,10 +145,11 @@ def main():
                 ### right now printing as series of list items
                 ### with ,' between each item
                 ### instead of line breaks
-                print_out = (listing + '\n' + '\n' + '\n')
                 indices.append(listing)
-                indices.append('\n')
-                indices.append('\n')
+                #indices = '\n'.join(map(str, indices))
+                indicies = "".join(indices)
+                #indices.append('\n')
+                #indices.append('\n')
                 #indicies.append(print_out)
                 #print(indices, "test")
         # build page for that keyword
