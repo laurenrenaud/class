@@ -131,6 +131,7 @@ def main():
             ### this outputs each line in a single quote with a comma at the end
             ### and then puts those all together
             ### not sure how to do it a different way so the format is right
+            ### Need to figure out how to concatenate instead of append
         #append the individual entries to the overall list
         abstract_list.append(article)
         # read in the next line
@@ -162,20 +163,36 @@ def main():
         for listing in abstract_list:
             # if keyword is in the abstract, append to a list
             # of articles for that keyword
-            if (word in listing):
-                list_of_abstracts = listing + '\n' + '\n'
-                indices.append(list_of_abstracts)
+            if (word in str(listing)):
+                ### Need to figure out how to print out 
+                ### in readable format
+                ### right now printing as series of list items
+                ### with ,' between each item
+                ### instead of line breaks
+                print_out = (listing + '\n' + '\n' + '\n')
+                indices.append(listing)
+                indices.append('\n')
+                indices.append('\n')
+                #indicies.append(print_out)
+                #print(indices, "test")
         # build page for that keyword
         # not sure how to use the variable of the keyword
         # to name the file
-        #page = str(indices)
-        #filename = word + '.html'
-        #keyword_file = open(filename, "w")
-        #keyword_file.write(indices)
-        #keyword_file.close()
+        page = str(indices)
+        print(page)
+        print("test")
+        filename = word + '.html'
+        ### Prints out the files
+        ### Commenting out now to prevent this part
+        ### from generating excess files 
+        ### while testing
+        keyword_file = open(filename, "w")
+        keyword_file.write(page)
+        keyword_file.close()
             
     # testing
-    print(indices)
+    #print(filename)
+    #print(indices)
     print('\n')
 
     # build HTML document
